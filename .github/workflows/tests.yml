@@ -5,8 +5,14 @@ on: [push]
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
+      - name: Cache multiple paths
+        uses: actions/cache@v2
+        with:
+          path: |
+            cocoapods
+            bundler
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
       - uses: maxim-lobanov/setup-xcode@v1.1
         with:
           xcode-version: '12.2'
@@ -15,8 +21,12 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.6.x
-      - name: Test with Rspec
+      - name: Test
         run: |        
           gem install bundler          
-          bundle install
-          bundle exec pod setup          
+          bundle install --path=${BUNDLE_PATH:-vendor/bundle}
+          bundle exec pod setup 
+          rake install
+          cd test
+          sh test.sh
+          cd ..         
