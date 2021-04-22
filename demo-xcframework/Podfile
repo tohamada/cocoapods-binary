@@ -1,11 +1,10 @@
-platform :ios, "9.0"
 plugin "cocoapods-binary"
 
 use_frameworks!
 enable_bitcode_for_prebuilt_frameworks!
-use_xcframework!
 
 target "demo" do
+  platform :ios, "12.0"
   pod "Alamofire", git: "git@github.com:Alamofire/Alamofire.git", binary: true
   pod "Masonry", binary: true, use_xcframework: true
 end

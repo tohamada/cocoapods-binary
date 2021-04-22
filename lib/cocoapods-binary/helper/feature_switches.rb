@@ -31,8 +31,8 @@ module Pod
 
         options = args.last
 
-        if options.is_a?(Hash) and options[Pod::Prebuild.keyword] != nil
-          should_prebuild = options[Pod::Prebuild.keyword]
+        if options.is_a?(Hash) and options[Pod::Prebuild.binary] != nil
+          should_prebuild = options[Pod::Prebuild.binary]
           local = (options[:path] != nil)
         end
 

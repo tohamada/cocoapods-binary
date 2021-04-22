@@ -1,6 +1,6 @@
 module Pod
   class Prebuild
-    def self.keyword
+    def self.binary
       :binary
     end
 
@@ -24,16 +24,16 @@ module Pod
           use_frameworks = options.delete(Pod::Prebuild.use_xcframework)
         end
 
-        if options.is_a?(Hash) && options[Pod::Prebuild.keyword] != nil
+        if options.is_a?(Hash) && options[Pod::Prebuild.binary] != nil
           # Remove option to avoid assertion of containing unknown options
-          should_prebuild = options.delete(Pod::Prebuild.keyword)
+          should_prebuild = options.delete(Pod::Prebuild.binary)
         end
 
         pod_name = Specification.root_name(name)
         set_prebuild_for_pod(pod_name, should_prebuild, use_frameworks)
       end
 
-      def set_prebuild_for_pod(pod_name, should_prebuild, use_frameworks)
+      private def set_prebuild_for_pod(pod_name, should_prebuild, use_frameworks)
         if should_prebuild == true
           @prebuild_framework_pod_names ||= []
           @prebuild_framework_pod_names.push pod_name
