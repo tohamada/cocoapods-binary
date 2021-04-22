@@ -36,8 +36,14 @@ module Pod
           local = (options[:path] != nil)
         end
 
-        if should_prebuild and (not local)
-          old_method.bind(self).(name, *args)
+        if should_prebuild
+          if local
+            Pod::UI.warn "⚠️ #{name} is local pod, it won't be prebuilt binary."
+          else
+            Pod::UI.puts "📦 Found a prebuild Pod => #{name}"
+            # Makes the pod Installing prebuild sandbox.
+            old_method.bind(self).(name, *args)
+          end
         end
       end
     end

@@ -34,30 +34,42 @@ module Pod
       end
 
       private def set_prebuild_for_pod(pod_name, should_prebuild, use_frameworks)
-        if should_prebuild == true
-          @prebuild_framework_pod_names ||= []
-          @prebuild_framework_pod_names.push pod_name
-        else
-          @should_not_prebuild_framework_pod_names ||= []
-          @should_not_prebuild_framework_pod_names.push pod_name
-        end
+        descriptor = {
+          :pod_name => pod_name,
+          :should_prebuild => should_prebuild,
+          :use_xcframework => use_frameworks,
+        }
+        @prebuild_framework_descriptors ||= []
+        @prebuild_framework_descriptors.push(descriptor)
       end
 
-      def prebuild_framework_pod_names
-        names = @prebuild_framework_pod_names || []
-        if parent != nil and parent.kind_of? TargetDefinition
-          names += parent.prebuild_framework_pod_names
-        end
-        names
+      def prebuild_framework_count
+        descriptors = @prebuild_framework_descriptors || []
+        count = descriptors.filter { |e| e[:should_prebuild] }.count
+        count
       end
 
-      def should_not_prebuild_framework_pod_names
-        names = @should_not_prebuild_framework_pod_names || []
-        if parent != nil and parent.kind_of? TargetDefinition
-          names += parent.should_not_prebuild_framework_pod_names
-        end
-        names
+      def unified_prebuild_framework_descriptors
+        descriptors = @prebuild_framework_descriptors || []
+        # TODO: aggregate parents
+        descriptors
       end
+
+      # def prebuild_framework_pod_names
+      #   names = @prebuild_framework_pod_names || []
+      #   if parent != nil and parent.kind_of? TargetDefinition
+      #     names += parent.prebuild_framework_pod_names
+      #   end
+      #   names
+      # end
+
+      # def should_not_prebuild_framework_pod_names
+      #   names = @should_not_prebuild_framework_pod_names || []
+      #   if parent != nil and parent.kind_of? TargetDefinition
+      #     names += parent.should_not_prebuild_framework_pod_names
+      #   end
+      #   names
+      # end
 
       # ---- patch method ----
       # We want modify `store_pod` method, but it's hard to insert a line in the
